@@ -126,5 +126,34 @@ Panes     = Split screen (see both at once)
 └─────────────────────┴──────────────┘
 ```
 
-With `cargo watch -x run`, just save in nvim and output auto-updates.
+### Auto-Run on Save Setup
+
+```bash
+# 1. Create split layout
+tmux new -s rust
+Ctrl-Space |              # Split vertical
+
+# 2. Left pane: open code
+nvim src/main.rs
+
+# 3. Right pane: start cargo watch
+Ctrl-l                    # Go right
+cargo watch -c -x run     # Auto-run on save (-c clears screen)
+
+# 4. Code!
+Ctrl-h                    # Back to nvim
+# Edit, then :w to save → right pane auto-runs!
+```
+
+### cargo watch Options
+
+```bash
+cargo watch -x run              # Run on save
+cargo watch -x test             # Test on save  
+cargo watch -x check            # Compile check only (fastest)
+cargo watch -c -x run           # Clear screen + run
+cargo watch -x 'test -- --nocapture'  # Tests with output
+```
+
+**Install:** `cargo install cargo-watch`
 
