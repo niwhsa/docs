@@ -42,15 +42,52 @@ Host github.com
     email = ashwin.ms@gmail.com
 ```
 
+### Generate SSH Keys
+```bash
+# Generate new key
+ssh-keygen -t ed25519 -C "your@email.com" -f ~/.ssh/id_ed25519_keyname
+
+# Show public key (copy to GitHub/GitLab settings)
+cat ~/.ssh/id_ed25519_keyname.pub
+
+# Add key to SSH agent
+ssh-add ~/.ssh/id_ed25519_keyname
+
+# Clear all keys from agent
+ssh-add -D
+
+# List keys in agent
+ssh-add -l
+```
+
 ### Verify Setup
 ```bash
 # Check which identity is used
 cd ~/personal/leetcode && git config user.email  # → ashwin.ms@gmail.com
 cd ~/cursor/udping && git config user.email      # → ashwin.suresh@yahooinc.com
 
-# Test SSH
+# Test SSH connection
 ssh -T git@github.com          # → Hi niwhsa!
 ssh -T git@git.ouryahoo.com    # → Welcome to Yahoo Git
+```
+
+### Find All Repos by Remote
+```bash
+# Find all repos pointing to a specific host
+for dir in ~/personal/*/; do
+  if [ -d "$dir/.git" ]; then
+    echo -n "$(basename $dir) → "
+    git -C "$dir" remote -v | grep fetch | awk '{print $2}'
+  fi
+done
+
+# Search for repos with specific remote pattern
+find ~ -maxdepth 4 -name ".git" -type d 2>/dev/null | while read gitdir; do
+  remote=$(git -C "${gitdir%/.git}" remote -v 2>/dev/null | grep github.com | head -1)
+  if [ -n "$remote" ]; then
+    echo "${gitdir%/.git}: $remote"
+  fi
+done
 ```
 
 ## Daily Commands
